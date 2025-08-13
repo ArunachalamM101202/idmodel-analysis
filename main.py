@@ -42,12 +42,12 @@ STRATEGY_DEFINITIONS = {
     7: {"display": "7", "name": "CYTO-3Y, 21-75", "test": "Cyto only", "start_age": 21, "end_age": 75, "switch_age": None, "exit_tests": 3, "interval": "3Y"},
     8: {"display": "8", "name": "CYTO-3Y, 21/HPV-5Y, 30-75", "test": "Cyto→HPV", "start_age": 21, "end_age": 75, "switch_age": 30, "exit_tests": 2, "interval": "3Y→5Y"},
     9: {"display": "9", "name": "CYTO-3Y, 21/COTEST-5Y, 30-75", "test": "Cyto→Cotest", "start_age": 21, "end_age": 75, "switch_age": 30, "exit_tests": 2, "interval": "3Y→5Y"},
-    10: {"display": "13", "name": "CYTO-3Y, 21/HPV-5Y, 30-65 (1 exit)", "test": "Cyto→HPV", "start_age": 21, "end_age": 65, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
-    11: {"display": "14", "name": "CYTO-3Y, 21/COTEST-5Y, 30-65 (1 exit)", "test": "Cyto→Cotest", "start_age": 21, "end_age": 65, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
-    12: {"display": "15", "name": "CYTO-3Y, 21/HPV-5Y, 30-70 (1 exit)", "test": "Cyto→HPV", "start_age": 21, "end_age": 70, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
-    13: {"display": "16", "name": "CYTO-3Y, 21/COTEST-5Y, 30-70 (1 exit)", "test": "Cyto→Cotest", "start_age": 21, "end_age": 70, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
-    14: {"display": "17", "name": "CYTO-3Y, 21/HPV-5Y, 30-75 (1 exit)", "test": "Cyto→HPV", "start_age": 21, "end_age": 75, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
-    15: {"display": "18", "name": "CYTO-3Y, 21/COTEST-5Y, 30-75 (1 exit)", "test": "Cyto→Cotest", "start_age": 21, "end_age": 75, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
+    10: {"display": "10", "name": "CYTO-3Y, 21/HPV-5Y, 30-65 (1 exit)", "test": "Cyto→HPV", "start_age": 21, "end_age": 65, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
+    11: {"display": "11", "name": "CYTO-3Y, 21/COTEST-5Y, 30-65 (1 exit)", "test": "Cyto→Cotest", "start_age": 21, "end_age": 65, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
+    12: {"display": "12", "name": "CYTO-3Y, 21/HPV-5Y, 30-70 (1 exit)", "test": "Cyto→HPV", "start_age": 21, "end_age": 70, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
+    13: {"display": "13", "name": "CYTO-3Y, 21/COTEST-5Y, 30-70 (1 exit)", "test": "Cyto→Cotest", "start_age": 21, "end_age": 70, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
+    14: {"display": "14", "name": "CYTO-3Y, 21/HPV-5Y, 30-75 (1 exit)", "test": "Cyto→HPV", "start_age": 21, "end_age": 75, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
+    15: {"display": "15", "name": "CYTO-3Y, 21/COTEST-5Y, 30-75 (1 exit)", "test": "Cyto→Cotest", "start_age": 21, "end_age": 75, "switch_age": 30, "exit_tests": 1, "interval": "3Y→5Y"},
 }
 
 @st.cache_data
@@ -254,7 +254,7 @@ def create_question_1_analysis(age_distributions, df_results):
             )
     
     fig.update_layout(
-        title="<b>Are Screening Tests Executed at Designed Ages? (All 15 Strategies)</b>",
+        title="<b>All 15 Strategies</b>",
         height=1200,  # Increased height for 5 rows
         showlegend=True,
         legend=dict(
@@ -509,38 +509,69 @@ def main():
     # Question 1: Age Distribution Analysis
     st.header("Are Screening Tests Executed at Designed Ages?")
     
-    st.write("""
-    This chart shows the distribution of screening tests by age for all 15 strategies.
-    - **Green dashed line**: Screening start age (21)
-    - **Orange dashed line**: Switch age (30) for HPV/Cotest strategies
-    - **Red dashed line**: Screening end age (65, 70, or 75)
-    - The bulk of tests should occur between start and end ages, with test type changes at age 30 for combined strategies.
-    """)
-    
     q1_fig = create_question_1_analysis(age_distributions, df)
     st.plotly_chart(q1_fig, use_container_width=True)
+
+    st.write("""
+    This chart shows the **distribution of screening tests by age** for all 15 strategies.
+    
+    **Colors (filled areas)**:
+    - 🟦 **Light Blue**: Cyto
+    - 🟩 **Light Green**: HPV
+    - 🟥 **Light Coral**: Cotest
+    
+    **Vertical dashed lines**:
+    - 🟢 **Green dashed line**: **Screening start age** (usually 21) — testing begins here.
+    - 🟠 **Orange dashed line**: **Switch age** (usually 30) — strategies that begin with Cytology switch to HPV or Cotest here.
+    - 🔴 **Red dashed line**: **Screening end age** (65, 70, or 75) — testing stops here.
+    
+    **How to interpret**:
+    - Each subplot is **one strategy** showing how test types are distributed across ages.
+    - The area under each color shows **how many tests of that type** occur at each age.
+    - For combined strategies, expect a visible shift in color at the switch age (orange line).
+    - The bulk of tests should occur **between start and end ages**.
+""")
     
     # Main Analysis for Questions 2, 3, 4
     st.header(" Cancer Outcomes Analysis")
     
-    st.write("""
-    **(Top Left)**: Total cancers by strategy. More intensive screening should show FEWER cancers.
-    
-    **(Top Right)**: Total cancer deaths by strategy. More intensive screening should show FEWER deaths.
-    
-    **(Bottom Left)**: Total life-years by strategy. More intensive screening should show MORE life-years.
-    
-    **Bottom Right**: Relationship between screening intensity (total tests) and cancer outcomes.
-    
-    **Color coding**:
-    - Blue: Standard strategies (end age 65)
-    - Orange: Extended to age 70
-    - Green: Extended to age 75
-    - Red: Single exit test strategies
-    """)
-    
     main_fig = create_main_analysis_charts(df)
     st.plotly_chart(main_fig, use_container_width=True)
+
+    st.write("""
+    This analysis compares **cancer outcomes** across all screening strategies using four plots (2×2 grid):
+    
+    **Top Left — Total Cancers**  
+    - Shows the **total number of cervical cancer cases** detected over a lifetime (to age 100).  
+    - **Lower bars = better prevention**.
+    
+    **Top Right — Total Cancer Deaths**  
+    - Shows the **total number of deaths** from cervical cancer over a lifetime.  
+    - **Lower bars = better survival**.
+    
+    **Bottom Left — Total Life-Years**  
+    - Shows the **total number of years lived** across the simulated population.  
+    - **Higher bars = better overall survival**.
+    
+    **Bottom Right — Screening Intensity vs Outcomes**  
+    - X-axis: Total screening tests performed.  
+    - Y-axis: Total cancer cases.  
+    - Bubble **color**: Total deaths (lighter = fewer deaths).  
+    - Each bubble = one strategy, labeled with its strategy number.  
+    **Interpretation (Bottom-Right Plot)**:  
+        - ⬅️ **Farther left** → Fewer total screening tests  
+        - ⬇️ **Farther down** → Fewer total cancer cases  
+        - 🎨 **Lighter color** → Fewer total deaths
+
+
+    
+    **Bar Color Legend**:  
+    - 🔵 **Blue** — Standard strategies (end age 65)  
+    - 🟧 **Orange** — Extended to age 70  
+    - 🟩 **Green** — Extended to age 75  
+    - 🔴 **Red** — Single-exit-test strategies
+    
+""")
     
     # Trend Analysis
     st.header("📈 Trend Analysis")
@@ -589,6 +620,8 @@ def main():
         use_container_width=True,
         hide_index=True
     )
+
+    
     
     # Key Findings
     st.header("✅ Key Findings & Conclusions")
